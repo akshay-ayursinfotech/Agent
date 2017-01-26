@@ -1,5 +1,6 @@
 package com.ayursinfotech.agent.service.impl;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,22 +12,26 @@ import com.ayursinfotech.agent.util.AgentConstants;
 @Service
 public class AgentServiceImpl implements AgentService {
 
+	private static final Logger LOGGER = Logger
+			.getLogger(AgentServiceImpl.class);
+
 	@Autowired
-	private AgentDAO virtualccDAO;
+	private AgentDAO agentDAO;
 
 	@Override
 	public BaseResponse ping() {
+		LOGGER.info("start executing ping");
 		BaseResponse response = new BaseResponse();
 		try {
-			if (virtualccDAO.ping()) {
+			if (agentDAO.ping()) {
 				response.setStatus(AgentConstants.STATUS_SUCCESS);
 			} else {
 				response.setStatus(AgentConstants.STATUS_FAILURE);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error(e);
 		}
+		LOGGER.info("end executing ping");
 		return response;
 	}
 

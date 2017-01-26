@@ -25,8 +25,14 @@
 		<antlr.version>2.7.7</antlr.version>
 		<jedis.version>2.9.0</jedis.version>
 		<codehaus.version>1.9.13</codehaus.version>
+		<log4j.version>1.2.17</log4j.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -168,7 +174,7 @@
 			<version>${antlr.version}</version>
 		</dependency>
 	</dependencies>
-<profiles>
+	<profiles>
 		<profile>
 			<id>dev</id>
 			<activation>

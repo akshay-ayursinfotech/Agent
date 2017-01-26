@@ -11,7 +11,7 @@
 		<!-- Configuration locations for mvc context -->
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath:/config/spring-rest.xml</param-value>
+			<param-value>classpath:spring-rest.xml</param-value>
 		</init-param>
 	</servlet>
 	

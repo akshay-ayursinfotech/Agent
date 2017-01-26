@@ -1,5 +1,6 @@
 package com.ayursinfotech.agent.controllers;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -12,16 +13,19 @@ import com.ayursinfotech.agent.response.BaseResponse;
 import com.ayursinfotech.agent.service.AgentService;
 
 @Controller
-@RequestMapping(value = "/virtualcc")
 public class AgentController {
 
+	private static final Logger LOGGER = Logger
+			.getLogger(AgentController.class);
+
 	@Autowired
-	private AgentService virtualccService;
+	private AgentService agentService;
 
 	@RequestMapping(value = "/ping", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	@ResponseBody
 	public BaseResponse ping() {
-		return virtualccService.ping();
+		LOGGER.info("start executing ping");
+		return agentService.ping();
 	}
 }
