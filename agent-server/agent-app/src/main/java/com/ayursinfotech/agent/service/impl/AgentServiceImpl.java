@@ -30,6 +30,8 @@ public class AgentServiceImpl implements AgentService {
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
+			response.setStatus(AgentConstants.STATUS_FAILURE);
+			response.setErrorMessage(e.getMessage());
 		}
 		LOGGER.info("end executing ping");
 		return response;

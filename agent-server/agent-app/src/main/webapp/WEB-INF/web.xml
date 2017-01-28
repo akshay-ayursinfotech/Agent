@@ -14,7 +14,9 @@
 			<param-value>classpath:spring-rest.xml</param-value>
 		</init-param>
 	</servlet>
+
 	
+		
 	<servlet-mapping>
 		<servlet-name>dispatcher-rest-servlet</servlet-name>
 		<url-pattern>/api/*</url-pattern>
