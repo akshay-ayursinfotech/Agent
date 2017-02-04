@@ -18,9 +18,14 @@ public interface AgentDAO {
 			throws DuplicateRecordFoundException, Exception;
 
 	Agent login(LoginDTO login) throws InvalidStatusException,
-			NoRecordFoundException, Exception;
+	NoRecordFoundException, Exception;
 
 	Boolean ping() throws Exception;
 
 	Agent registerAgent(Agent agent);
+
+	boolean validateCredentials(String mobileNo, String password)
+			throws NoRecordFoundException, InvalidStatusException, Exception;
+
+	void changePassword(LoginDTO login);
 }

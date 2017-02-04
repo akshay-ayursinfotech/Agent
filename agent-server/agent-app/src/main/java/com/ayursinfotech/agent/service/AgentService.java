@@ -14,4 +14,6 @@ public interface AgentService {
 
 	BaseResponse registerAgent(AgentDTO agentDTO);
 
+	BaseResponse changePassword(LoginDTO login);
+
 }

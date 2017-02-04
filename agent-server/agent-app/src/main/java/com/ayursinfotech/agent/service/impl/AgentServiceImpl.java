@@ -172,4 +172,34 @@ public class AgentServiceImpl implements AgentService {
 		LOGGER.info("end executing registerAgent");
 		return response;
 	}
+
+	@Override
+	public BaseResponse changePassword(LoginDTO login) {
+		LOGGER.info("start executing changePassword");
+		ModelMapper mapper = new ModelMapper();
+		BaseResponse response = new BaseResponse();
+		try {
+			if (agentDAO.validateCredentials(login.getMobileNo(),
+					login.getPassword())) {
+				agentDAO.changePassword(login);
+				response.setMessage("Password Updated Successfuly");
+				response.setStatus(AgentConstants.STATUS_SUCCESS);
+			}
+
+		} catch (InvalidStatusException e) {
+			response.setStatus(AgentConstants.STATUS_SUCCESS);
+			response.setMessage(e.getMessage());
+			LOGGER.error(e);
+		} catch (NoRecordFoundException e) {
+			response.setStatus(AgentConstants.STATUS_SUCCESS);
+			response.setMessage(e.getMessage());
+			LOGGER.error(e);
+		} catch (Exception e) {
+			response.setStatus(AgentConstants.STATUS_FAILURE);
+			response.setErrorMessage(e.getMessage());
+			LOGGER.error(e);
+		}
+		LOGGER.info("end executing changePassword");
+		return response;
+	}
 }

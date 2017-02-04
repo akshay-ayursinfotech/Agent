@@ -57,4 +57,11 @@ public class AgentController {
 		return agentService.registerAgent(agentDTO);
 	}
 
+	@RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public BaseResponse changePassword(@RequestBody LoginDTO login) {
+		LOGGER.info("inside ChangePassword");
+		return agentService.changePassword(login);
+	}
 }
