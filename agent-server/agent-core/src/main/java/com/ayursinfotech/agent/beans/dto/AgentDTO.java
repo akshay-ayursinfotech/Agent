@@ -1,22 +1,11 @@
-package com.ayursinfotech.agent.beans.entity;
+package com.ayursinfotech.agent.beans.dto;
 
 import java.math.BigInteger;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import com.ayursinfotech.agent.beans.entity.Address;
 
-@Entity
-@Table(name = "agent")
-public class Agent {
-	@Id
-	@GeneratedValue
-	@Column(columnDefinition = "bigint")
+public class AgentDTO extends BaseDTO {
+
 	private BigInteger id;
 	private String status;
 	private String title;
@@ -28,12 +17,8 @@ public class Agent {
 	private String password;
 	private java.util.Date createdDate;
 	private java.util.Date updatedDate;
-	@Column(columnDefinition = "bigint")
 	private BigInteger createdBy;
-	@Column(columnDefinition = "bigint")
 	private BigInteger modifiedBy;
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "addressId", insertable = false, updatable = false)
 	private Address address;
 
 	public Address getAddress() {

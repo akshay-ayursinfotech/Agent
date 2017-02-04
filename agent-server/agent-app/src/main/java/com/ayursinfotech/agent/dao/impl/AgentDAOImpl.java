@@ -1,19 +1,21 @@
 package com.ayursinfotech.agent.dao.impl;
 
-import java.math.BigInteger;
-
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
-import com.ayursinfotech.agent.beans.entity.PincodeMaster;
+import com.ayursinfotech.agent.beans.dto.LoginDTO;
+import com.ayursinfotech.agent.beans.entity.Agent;
 import com.ayursinfotech.agent.dao.AgentDAO;
+import com.ayursinfotech.agent.exception.InvalidStatusException;
+import com.ayursinfotech.agent.exception.NoRecordFoundException;
+import com.ayursinfotech.agent.util.AgentConstants;
 
-@Service
+@Repository
 public class AgentDAOImpl implements AgentDAO {
 
 	private static final Logger LOGGER = Logger.getLogger(AgentDAOImpl.class);
@@ -22,15 +24,43 @@ public class AgentDAOImpl implements AgentDAO {
 	private SessionFactory sessionFactory;
 
 	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
+	public Agent login(LoginDTO login) throws InvalidStatusException,
+	NoRecordFoundException, Exception {
+		LOGGER.info("start executing login");
+		Agent agent = null;
+		Session session = sessionFactory.openSession();
+		try {
+			Criteria cr = session.createCriteria(Agent.class);
+			cr.add(Restrictions.eq("mobileNo", login.getMobileNo()));
+			cr.add(Restrictions.eq("password", login.getPassword()));
+			agent = (Agent) cr.uniqueResult();
+			if (agent != null) {
+				if (AgentConstants.INACTIVE.equalsIgnoreCase(agent.getStatus())) {
+					throw new InvalidStatusException("Agent is Inactive");
+				} else if (AgentConstants.BLOCKED.equalsIgnoreCase(agent
+						.getStatus())) {
+					throw new InvalidStatusException("Agent is Blocked");
+				} else if (AgentConstants.UNVERIFIED.equalsIgnoreCase(agent
+						.getStatus())) {
+					throw new InvalidStatusException("Agent is Unverified");
+				} else if (AgentConstants.ACTIVE.equalsIgnoreCase(agent
+						.getStatus())) {
+					// TODO create a login log
+					// TODO maintain session
+				}
+			} else {
+				throw new NoRecordFoundException("No Agent Found");
+			}
+		} finally {
+			session.close();
+		}
+		LOGGER.info("end executing login");
+		return agent;
+	}
+
+	@Override
 	public Boolean ping() throws Exception {
 		LOGGER.info("start executing ping");
-		System.out.println("akhskh");
-		Session session = sessionFactory.getCurrentSession();
-		// Transaction transaction = session.beginTransaction();
-		PincodeMaster master = (PincodeMaster) session.get(PincodeMaster.class,
-				new BigInteger("1"));
-		// transaction.commit();
 		Boolean result = true;
 		LOGGER.info("end executing ping");
 		return result;

@@ -2,21 +2,32 @@ package com.ayursinfotech.agent.response;
 
 import java.io.Serializable;
 
+import com.ayursinfotech.agent.beans.dto.BaseDTO;
+
 public class BaseResponse implements Serializable {
 
 	private String status;
 	private String errorMessage;
+	private BaseDTO baseDTO;
+
+	public BaseDTO getBaseDTO() {
+		return baseDTO;
+	}
 
 	public String getErrorMessage() {
 		return errorMessage;
 	}
 
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
-
 	public String getStatus() {
 		return status;
+	}
+
+	public void setBaseDTO(BaseDTO baseDTO) {
+		this.baseDTO = baseDTO;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 	public void setStatus(String status) {
