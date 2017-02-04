@@ -64,4 +64,13 @@ public class AgentController {
 		LOGGER.info("inside ChangePassword");
 		return agentService.changePassword(login);
 	}
+
+	@RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public BaseResponse forgotPassword(@RequestBody LoginDTO login) {
+		LOGGER.info("inside forgotPassword");
+		return agentService.forgotPassword(login);
+	}
+
 }

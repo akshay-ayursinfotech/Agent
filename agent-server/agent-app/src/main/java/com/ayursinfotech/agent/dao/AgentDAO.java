@@ -28,4 +28,7 @@ public interface AgentDAO {
 			throws NoRecordFoundException, InvalidStatusException, Exception;
 
 	void changePassword(LoginDTO login);
+
+	Agent getAgentByMobileNo(String mobileNo) throws NoRecordFoundException,
+			Exception;
 }

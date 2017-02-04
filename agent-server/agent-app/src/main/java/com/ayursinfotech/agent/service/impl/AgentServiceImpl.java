@@ -18,6 +18,7 @@ import com.ayursinfotech.agent.exception.NoRecordFoundException;
 import com.ayursinfotech.agent.response.BaseResponse;
 import com.ayursinfotech.agent.service.AgentService;
 import com.ayursinfotech.agent.util.AgentConstants;
+import com.ayursinfotech.agent.util.CustomEncrypt;
 import com.ayursinfotech.agent.util.RandomGenerator;
 
 @Service
@@ -200,6 +201,35 @@ public class AgentServiceImpl implements AgentService {
 			LOGGER.error(e);
 		}
 		LOGGER.info("end executing changePassword");
+		return response;
+	}
+
+	@Override
+	public BaseResponse forgotPassword(LoginDTO login) {
+		LOGGER.info("start executing forgotPassword");
+		ModelMapper mp = new ModelMapper();
+		BaseResponse response = new BaseResponse();
+		try {
+			Agent agent = agentDAO.getAgentByMobileNo(login.getMobileNo());
+			if (agent != null) {
+				String encrMobile = CustomEncrypt.encrypt(login.getMobileNo());
+				String encrTime = CustomEncrypt.encrypt(Long.toString(System
+						.currentTimeMillis()));
+				// TODO send reset password link to mail/mobie
+				response.setStatus(AgentConstants.STATUS_SUCCESS);
+				response.setMessage("password reset link sent successfully");
+			}
+
+		} catch (NoRecordFoundException e) {
+			response.setMessage(e.getMessage());
+			response.setStatus(AgentConstants.STATUS_SUCCESS);
+			LOGGER.error(e);
+		} catch (Exception e) {
+			response.setStatus(AgentConstants.STATUS_FAILURE);
+			response.setMessage(e.getMessage());
+			LOGGER.error(e);
+		}
+		LOGGER.info("end executing forgotPassword");
 		return response;
 	}
 }

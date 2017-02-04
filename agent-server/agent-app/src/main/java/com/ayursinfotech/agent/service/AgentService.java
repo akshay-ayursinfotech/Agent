@@ -16,4 +16,6 @@ public interface AgentService {
 
 	BaseResponse changePassword(LoginDTO login);
 
+	BaseResponse forgotPassword(LoginDTO login);
+
 }

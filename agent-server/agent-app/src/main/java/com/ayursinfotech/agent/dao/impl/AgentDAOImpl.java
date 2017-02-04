@@ -45,7 +45,7 @@ public class AgentDAOImpl implements AgentDAO {
 
 	@Override
 	public Agent getAgent(BigInteger agentId) throws NoRecordFoundException,
-	Exception {
+			Exception {
 		LOGGER.info("start executing getAgent");
 		Session session = sessionFactory.openSession();
 		Agent agent = null;
@@ -85,7 +85,7 @@ public class AgentDAOImpl implements AgentDAO {
 
 	@Override
 	public Agent login(LoginDTO login) throws InvalidStatusException,
-	NoRecordFoundException, Exception {
+			NoRecordFoundException, Exception {
 		LOGGER.info("start executing login");
 		Agent agent = null;
 		Session session = sessionFactory.openSession();
@@ -196,4 +196,23 @@ public class AgentDAOImpl implements AgentDAO {
 		}
 	}
 
+	@Override
+	public Agent getAgentByMobileNo(String mobileNo)
+			throws NoRecordFoundException, Exception {
+		LOGGER.info("start executing getAgentByMobileno");
+		Session session = sessionFactory.openSession();
+		try {
+			Criteria cr = session.createCriteria(Agent.class);
+			cr.add(Restrictions.eq("mobileNo", mobileNo));
+			Agent agent = (Agent) cr.uniqueResult();
+			if (agent == null) {
+				throw new NoRecordFoundException(
+						"No agent exist with mobile number");
+			}
+			LOGGER.info("end executing getAgentByMobileno");
+			return agent;
+		} finally {
+			session.close();
+		}
+	}
 }
