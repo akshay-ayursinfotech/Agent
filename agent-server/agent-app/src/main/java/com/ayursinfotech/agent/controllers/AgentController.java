@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -73,4 +74,14 @@ public class AgentController {
 		return agentService.forgotPassword(login);
 	}
 
+	@RequestMapping(value = "/resetPassword/{mobileNo}/{time}", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public BaseResponse resetPassword(@RequestBody LoginDTO login,
+			@PathVariable(value = "mobileNo") String mobileNo,
+			@PathVariable(value = "time") String time) {
+		LOGGER.info("inside resetPassword");
+		return agentService.resetPassword(mobileNo, login.getNewpassword(),
+				time);
+	}
 }

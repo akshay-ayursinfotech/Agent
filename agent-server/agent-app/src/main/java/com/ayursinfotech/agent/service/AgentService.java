@@ -18,4 +18,7 @@ public interface AgentService {
 
 	BaseResponse forgotPassword(LoginDTO login);
 
+	BaseResponse resetPassword(String mobileNo, String newPassword,
+			String timestamp);
+
 }

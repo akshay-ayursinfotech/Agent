@@ -207,7 +207,6 @@ public class AgentServiceImpl implements AgentService {
 	@Override
 	public BaseResponse forgotPassword(LoginDTO login) {
 		LOGGER.info("start executing forgotPassword");
-		ModelMapper mp = new ModelMapper();
 		BaseResponse response = new BaseResponse();
 		try {
 			Agent agent = agentDAO.getAgentByMobileNo(login.getMobileNo());
@@ -230,6 +229,44 @@ public class AgentServiceImpl implements AgentService {
 			LOGGER.error(e);
 		}
 		LOGGER.info("end executing forgotPassword");
+		return response;
+	}
+
+	@Override
+	public BaseResponse resetPassword(String mobileNo, String newPassword,
+			String timestamp) {
+		LOGGER.info("start executing resetPassword");
+		BaseResponse response = new BaseResponse();
+		ModelMapper mapper = new ModelMapper();
+		try {
+			String decryptedMobileNo = CustomEncrypt.decrypt(mobileNo);
+			String decryptedTimeStamp = CustomEncrypt.decrypt(timestamp);
+			if ((System.currentTimeMillis() - Long
+					.parseLong(decryptedTimeStamp)) < 86500000) {
+				// TODO get this number from configurations
+				LoginDTO login = new LoginDTO();
+				login.setMobileNo(decryptedMobileNo);
+				login.setNewpassword(newPassword);
+				Agent agent = agentDAO.getAgentByMobileNo(decryptedMobileNo);
+				if (agent != null) {
+					agent.setPassword(login.getNewpassword());
+					agent.setUpdatedDate(new Date());
+					agentDAO.resetPassword(agent);
+					response.setMessage("password changed successfully");
+					response.setStatus(AgentConstants.STATUS_SUCCESS);
+				}
+			} else {
+				response.setMessage("Unable to reset password");
+				response.setErrorMessage("Link expired");
+				response.setStatus(AgentConstants.STATUS_SUCCESS);
+			}
+
+		} catch (Exception e) {
+			LOGGER.error(e);
+			response.setMessage("Unable to reset password");
+			response.setStatus(AgentConstants.STATUS_FAILURE);
+		}
+		LOGGER.info("end executing resetPassword");
 		return response;
 	}
 }

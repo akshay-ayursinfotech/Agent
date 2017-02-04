@@ -31,4 +31,6 @@ public interface AgentDAO {
 
 	Agent getAgentByMobileNo(String mobileNo) throws NoRecordFoundException,
 			Exception;
+
+	void resetPassword(Agent agent);
 }

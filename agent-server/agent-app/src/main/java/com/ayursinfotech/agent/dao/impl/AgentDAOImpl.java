@@ -215,4 +215,18 @@ public class AgentDAOImpl implements AgentDAO {
 			session.close();
 		}
 	}
+
+	@Override
+	public void resetPassword(Agent agent) {
+		LOGGER.info("start executing resetPassword");
+		Session session = sessionFactory.openSession();
+		try {
+			Transaction tx = session.beginTransaction();
+			session.update(agent);
+			tx.commit();
+			LOGGER.info("end executing resetPassword");
+		} finally {
+			session.close();
+		}
+	}
 }
