@@ -24,6 +24,14 @@ public class AgentController {
 	@Autowired
 	private AgentService agentService;
 
+	@RequestMapping(value = "/editProfile", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public BaseResponse editAgentProfile(@RequestBody AgentDTO agentDTO) {
+		LOGGER.info("inside editAgentProfile");
+		return agentService.editAgentProfile(agentDTO);
+	}
+
 	// method for login validation
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
@@ -48,4 +56,5 @@ public class AgentController {
 		LOGGER.info("inside registerAgent");
 		return agentService.registerAgent(agentDTO);
 	}
+
 }

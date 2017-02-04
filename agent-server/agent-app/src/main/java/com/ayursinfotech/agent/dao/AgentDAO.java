@@ -1,5 +1,7 @@
 package com.ayursinfotech.agent.dao;
 
+import java.math.BigInteger;
+
 import com.ayursinfotech.agent.beans.dto.LoginDTO;
 import com.ayursinfotech.agent.beans.entity.Agent;
 import com.ayursinfotech.agent.exception.DuplicateRecordFoundException;
@@ -8,11 +10,15 @@ import com.ayursinfotech.agent.exception.NoRecordFoundException;
 
 public interface AgentDAO {
 
+	Agent editAgentProfile(Agent agent);
+
+	Agent getAgent(BigInteger agentId) throws NoRecordFoundException, Exception;
+
 	boolean isRegisteredAgent(Agent agent)
 			throws DuplicateRecordFoundException, Exception;
 
 	Agent login(LoginDTO login) throws InvalidStatusException,
-	NoRecordFoundException, Exception;
+			NoRecordFoundException, Exception;
 
 	Boolean ping() throws Exception;
 

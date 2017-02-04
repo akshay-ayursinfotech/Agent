@@ -1,5 +1,7 @@
 package com.ayursinfotech.agent.dao.impl;
 
+import java.math.BigInteger;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -26,10 +28,43 @@ public class AgentDAOImpl implements AgentDAO {
 	private SessionFactory sessionFactory;
 
 	@Override
+	public Agent editAgentProfile(Agent agent) {
+		LOGGER.info("start executing editAgentProfile");
+		Session session = sessionFactory.openSession();
+		try {
+			Transaction tx = session.beginTransaction();
+			session.update(agent);
+			tx.commit();
+			LOGGER.info("end executing editAgentProfile");
+			return agent;
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public Agent getAgent(BigInteger agentId) throws NoRecordFoundException,
+			Exception {
+		LOGGER.info("start executing getAgent");
+		Session session = sessionFactory.openSession();
+		Agent agent = null;
+		try {
+			agent = (Agent) session.get(Agent.class, agentId);
+			if (agent != null) {
+				LOGGER.info("end executing getAgent");
+			} else {
+				throw new NoRecordFoundException("invalid agent Id");
+			}
+		} finally {
+			session.close();
+		}
+		return agent;
+	}
+
+	@Override
 	public boolean isRegisteredAgent(Agent agent)
 			throws DuplicateRecordFoundException, Exception {
 		LOGGER.info("start executing isRegisteredAgent");
-		boolean isRegisteredAgent = true;
 		Session session = sessionFactory.openSession();
 		try {
 			// check for duplicate mobile number

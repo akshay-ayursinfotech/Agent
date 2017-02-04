@@ -1,5 +1,7 @@
 package com.ayursinfotech.agent.service.impl;
 
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import com.ayursinfotech.agent.beans.dto.LoginDTO;
 import com.ayursinfotech.agent.beans.entity.Agent;
 import com.ayursinfotech.agent.dao.AgentDAO;
 import com.ayursinfotech.agent.exception.DuplicateRecordFoundException;
+import com.ayursinfotech.agent.exception.IllegalParameterException;
 import com.ayursinfotech.agent.exception.InvalidStatusException;
 import com.ayursinfotech.agent.exception.NoRecordFoundException;
 import com.ayursinfotech.agent.response.BaseResponse;
@@ -25,6 +28,62 @@ public class AgentServiceImpl implements AgentService {
 
 	@Autowired
 	private AgentDAO agentDAO;
+
+	@Override
+	public BaseResponse editAgentProfile(AgentDTO agentDTO) {
+		LOGGER.info("start executing editCustomerProfile");
+		ModelMapper mapper = new ModelMapper();
+		BaseResponse response = new BaseResponse();
+		try {
+
+			if (agentDTO.getMobileNo() != null || agentDTO.getEmail() != null) {
+				throw new IllegalParameterException(
+						"Non Updatable field email or mobile number");
+			}
+			Agent agentDetails = agentDAO.getAgent(agentDTO.getId());
+			if (agentDetails != null) {
+				// add fields to be updated
+				agentDetails = getMergedAgent(agentDetails, agentDTO);
+
+				Agent updatedAgent = agentDAO.editAgentProfile(agentDetails);
+				response.setBaseDTO(mapper.map(updatedAgent, AgentDTO.class));
+				response.setMessage("Agent Profile editted Successfully");
+				response.setStatus(AgentConstants.STATUS_SUCCESS);
+			}
+		} catch (IllegalParameterException e) {
+			LOGGER.error(e);
+			response.setErrorMessage(e.getMessage());
+			response.setStatus(AgentConstants.STATUS_SUCCESS);
+		} catch (NoRecordFoundException e) {
+			LOGGER.error(e);
+			response.setErrorMessage(e.getMessage());
+			response.setStatus(AgentConstants.STATUS_SUCCESS);
+		} catch (Exception e) {
+			LOGGER.error(e);
+			response.setErrorMessage(e.getMessage());
+			response.setStatus(AgentConstants.STATUS_FAILURE);
+		}
+		LOGGER.info("end executing editAgentProfile");
+		return response;
+	}
+
+	private Agent getMergedAgent(Agent agentDetails, AgentDTO agentDTO) {
+		if (agentDTO.getGender() != null) {
+			agentDetails.setGender(agentDTO.getGender());
+		}
+		if (agentDTO.getTitle() != null) {
+			agentDetails.setTitle(agentDTO.getTitle());
+		}
+		agentDetails.setUpdatedDate(new Date());
+
+		if (agentDTO.getName() != null) {
+			agentDetails.setName(agentDTO.getName());
+		}
+		if (agentDTO.getUserName() != null) {
+			agentDetails.setUserName(agentDTO.getUserName());
+		}
+		return agentDetails;
+	}
 
 	@Override
 	public BaseResponse login(LoginDTO login) {

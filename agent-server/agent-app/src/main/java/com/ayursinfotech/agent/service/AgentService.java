@@ -6,6 +6,8 @@ import com.ayursinfotech.agent.response.BaseResponse;
 
 public interface AgentService {
 
+	BaseResponse editAgentProfile(AgentDTO agentDTO);
+
 	BaseResponse login(LoginDTO login);
 
 	BaseResponse ping();
