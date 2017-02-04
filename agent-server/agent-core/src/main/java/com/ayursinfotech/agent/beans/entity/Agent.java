@@ -19,6 +19,7 @@ public class Agent {
 	@Column(columnDefinition = "bigint")
 	private BigInteger id;
 	private String status;
+	private String statusChangeReason;
 	private String title;
 	private String userName;
 	private String name;
@@ -35,6 +36,7 @@ public class Agent {
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "addressId", insertable = false, updatable = false)
 	private Address address;
+	private String verificationCode;
 
 	public Address getAddress() {
 		return address;
@@ -80,6 +82,10 @@ public class Agent {
 		return status;
 	}
 
+	public String getStatusChangeReason() {
+		return statusChangeReason;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -90,6 +96,10 @@ public class Agent {
 
 	public String getUserName() {
 		return userName;
+	}
+
+	public String getVerificationCode() {
+		return verificationCode;
 	}
 
 	public void setAddress(Address address) {
@@ -136,6 +146,10 @@ public class Agent {
 		this.status = status;
 	}
 
+	public void setStatusChangeReason(String statusChangeReason) {
+		this.statusChangeReason = statusChangeReason;
+	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -146,6 +160,15 @@ public class Agent {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
+
+	public boolean isRegisteredAgent(Agent agent) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

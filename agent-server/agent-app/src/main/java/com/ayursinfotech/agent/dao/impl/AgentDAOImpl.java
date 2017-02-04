@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.ayursinfotech.agent.beans.dto.LoginDTO;
 import com.ayursinfotech.agent.beans.entity.Agent;
 import com.ayursinfotech.agent.dao.AgentDAO;
+import com.ayursinfotech.agent.exception.DuplicateRecordFoundException;
 import com.ayursinfotech.agent.exception.InvalidStatusException;
 import com.ayursinfotech.agent.exception.NoRecordFoundException;
 import com.ayursinfotech.agent.util.AgentConstants;
@@ -22,6 +24,28 @@ public class AgentDAOImpl implements AgentDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+
+	@Override
+	public boolean isRegisteredAgent(Agent agent)
+			throws DuplicateRecordFoundException, Exception {
+		LOGGER.info("start executing isRegisteredAgent");
+		boolean isRegisteredAgent = true;
+		Session session = sessionFactory.openSession();
+		try {
+			// check for duplicate mobile number
+			Criteria cr = session.createCriteria(Agent.class);
+			cr.add(Restrictions.eq("mobileNo", agent.getMobileNo()));
+			Agent agentGotFromDB = (Agent) cr.uniqueResult();
+			if (agentGotFromDB != null) {
+				throw new DuplicateRecordFoundException(
+						"duplicate mobile number");
+			}
+			LOGGER.info("end executing isRegisteredAgent");
+		} finally {
+			session.close();
+		}
+		return true;
+	}
 
 	@Override
 	public Agent login(LoginDTO login) throws InvalidStatusException,
@@ -64,6 +88,21 @@ public class AgentDAOImpl implements AgentDAO {
 		Boolean result = true;
 		LOGGER.info("end executing ping");
 		return result;
+	}
+
+	@Override
+	public Agent registerAgent(Agent agent) {
+		LOGGER.info("start executing registerAgent");
+		Session session = sessionFactory.openSession();
+		try {
+			Transaction tx = session.beginTransaction();
+			session.saveOrUpdate(agent);
+			tx.commit();
+			LOGGER.info("end executing registerAgent");
+			return agent;
+		} finally {
+			session.close();
+		}
 	}
 
 }

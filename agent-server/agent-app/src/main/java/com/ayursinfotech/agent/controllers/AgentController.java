@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.ayursinfotech.agent.beans.dto.AgentDTO;
 import com.ayursinfotech.agent.beans.dto.LoginDTO;
 import com.ayursinfotech.agent.response.BaseResponse;
 import com.ayursinfotech.agent.service.AgentService;
@@ -38,5 +39,13 @@ public class AgentController {
 	public BaseResponse ping() {
 		LOGGER.info("start executing ping");
 		return agentService.ping();
+	}
+
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public BaseResponse registerAgent(@RequestBody AgentDTO agentDTO) {
+		LOGGER.info("inside registerAgent");
+		return agentService.registerAgent(agentDTO);
 	}
 }

@@ -8,6 +8,7 @@ public class BaseResponse implements Serializable {
 
 	private String status;
 	private String errorMessage;
+	private String message;
 	private BaseDTO baseDTO;
 
 	public BaseDTO getBaseDTO() {
@@ -16,6 +17,10 @@ public class BaseResponse implements Serializable {
 
 	public String getErrorMessage() {
 		return errorMessage;
+	}
+
+	public String getMessage() {
+		return message;
 	}
 
 	public String getStatus() {
@@ -28,6 +33,10 @@ public class BaseResponse implements Serializable {
 
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public void setStatus(String status) {
