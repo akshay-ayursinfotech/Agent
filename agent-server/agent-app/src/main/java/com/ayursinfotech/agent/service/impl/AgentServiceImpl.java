@@ -24,8 +24,7 @@ import com.ayursinfotech.agent.util.RandomGenerator;
 @Service
 public class AgentServiceImpl implements AgentService {
 
-	private static final Logger LOGGER = Logger
-			.getLogger(AgentServiceImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(AgentServiceImpl.class);
 
 	@Autowired
 	private AgentDAO agentDAO;
@@ -38,8 +37,7 @@ public class AgentServiceImpl implements AgentService {
 		try {
 
 			if (agentDTO.getMobileNo() != null || agentDTO.getEmail() != null) {
-				throw new IllegalParameterException(
-						"Non Updatable field email or mobile number");
+				throw new IllegalParameterException("Non Updatable field email or mobile number");
 			}
 			Agent agentDetails = agentDAO.getAgent(agentDTO.getId());
 			if (agentDetails != null) {
@@ -150,7 +148,7 @@ public class AgentServiceImpl implements AgentService {
 			agentDTO.setStatus(AgentConstants.UNVERIFIED);
 			agentDTO.setStatusChangeReason("New Customer Not Verified Yet");
 			agentDTO.setVerificationCode(RandomGenerator.randomNumber(6));
-			agentDTO.setPassword(agent.getPassword());
+			agentDTO.setPassword(agentDTO.getPassword());
 
 			agent = agentDAO.registerAgent(mp.map(agentDTO, Agent.class));
 			response.setBaseDTO(mp.map(agent, AgentDTO.class));
@@ -177,11 +175,9 @@ public class AgentServiceImpl implements AgentService {
 	@Override
 	public BaseResponse changePassword(LoginDTO login) {
 		LOGGER.info("start executing changePassword");
-		ModelMapper mapper = new ModelMapper();
 		BaseResponse response = new BaseResponse();
 		try {
-			if (agentDAO.validateCredentials(login.getMobileNo(),
-					login.getPassword())) {
+			if (agentDAO.validateCredentials(login.getMobileNo(), login.getPassword())) {
 				agentDAO.changePassword(login);
 				response.setMessage("Password Updated Successfuly");
 				response.setStatus(AgentConstants.STATUS_SUCCESS);
@@ -211,9 +207,12 @@ public class AgentServiceImpl implements AgentService {
 		try {
 			Agent agent = agentDAO.getAgentByMobileNo(login.getMobileNo());
 			if (agent != null) {
-				String encrMobile = CustomEncrypt.encrypt(login.getMobileNo());
-				String encrTime = CustomEncrypt.encrypt(Long.toString(System
-						.currentTimeMillis()));
+				/*
+				 * String encrMobile =
+				 * CustomEncrypt.encrypt(login.getMobileNo()); String encrTime =
+				 * CustomEncrypt.encrypt(Long.toString(System.currentTimeMillis(
+				 * )));
+				 */
 				// TODO send reset password link to mail/mobie
 				response.setStatus(AgentConstants.STATUS_SUCCESS);
 				response.setMessage("password reset link sent successfully");
@@ -233,16 +232,13 @@ public class AgentServiceImpl implements AgentService {
 	}
 
 	@Override
-	public BaseResponse resetPassword(String mobileNo, String newPassword,
-			String timestamp) {
+	public BaseResponse resetPassword(String mobileNo, String newPassword, String timestamp) {
 		LOGGER.info("start executing resetPassword");
 		BaseResponse response = new BaseResponse();
-		ModelMapper mapper = new ModelMapper();
 		try {
 			String decryptedMobileNo = CustomEncrypt.decrypt(mobileNo);
 			String decryptedTimeStamp = CustomEncrypt.decrypt(timestamp);
-			if ((System.currentTimeMillis() - Long
-					.parseLong(decryptedTimeStamp)) < 86500000) {
+			if ((System.currentTimeMillis() - Long.parseLong(decryptedTimeStamp)) < 86500000) {
 				// TODO get this number from configurations
 				LoginDTO login = new LoginDTO();
 				login.setMobileNo(decryptedMobileNo);

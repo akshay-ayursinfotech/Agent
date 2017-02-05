@@ -2,6 +2,7 @@ package com.ayursinfotech.agent.dao.impl;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -44,8 +45,7 @@ public class AgentDAOImpl implements AgentDAO {
 	}
 
 	@Override
-	public Agent getAgent(BigInteger agentId) throws NoRecordFoundException,
-			Exception {
+	public Agent getAgent(BigInteger agentId) throws NoRecordFoundException, Exception {
 		LOGGER.info("start executing getAgent");
 		Session session = sessionFactory.openSession();
 		Agent agent = null;
@@ -63,8 +63,7 @@ public class AgentDAOImpl implements AgentDAO {
 	}
 
 	@Override
-	public boolean isRegisteredAgent(Agent agent)
-			throws DuplicateRecordFoundException, Exception {
+	public boolean isRegisteredAgent(Agent agent) throws DuplicateRecordFoundException, Exception {
 		LOGGER.info("start executing isRegisteredAgent");
 		Session session = sessionFactory.openSession();
 		try {
@@ -73,8 +72,7 @@ public class AgentDAOImpl implements AgentDAO {
 			cr.add(Restrictions.eq("mobileNo", agent.getMobileNo()));
 			Agent agentGotFromDB = (Agent) cr.uniqueResult();
 			if (agentGotFromDB != null) {
-				throw new DuplicateRecordFoundException(
-						"duplicate mobile number");
+				throw new DuplicateRecordFoundException("duplicate mobile number");
 			}
 			LOGGER.info("end executing isRegisteredAgent");
 		} finally {
@@ -84,8 +82,7 @@ public class AgentDAOImpl implements AgentDAO {
 	}
 
 	@Override
-	public Agent login(LoginDTO login) throws InvalidStatusException,
-			NoRecordFoundException, Exception {
+	public Agent login(LoginDTO login) throws InvalidStatusException, NoRecordFoundException, Exception {
 		LOGGER.info("start executing login");
 		Agent agent = null;
 		Session session = sessionFactory.openSession();
@@ -97,14 +94,11 @@ public class AgentDAOImpl implements AgentDAO {
 			if (agent != null) {
 				if (AgentConstants.INACTIVE.equalsIgnoreCase(agent.getStatus())) {
 					throw new InvalidStatusException("Agent is Inactive");
-				} else if (AgentConstants.BLOCKED.equalsIgnoreCase(agent
-						.getStatus())) {
+				} else if (AgentConstants.BLOCKED.equalsIgnoreCase(agent.getStatus())) {
 					throw new InvalidStatusException("Agent is Blocked");
-				} else if (AgentConstants.UNVERIFIED.equalsIgnoreCase(agent
-						.getStatus())) {
+				} else if (AgentConstants.UNVERIFIED.equalsIgnoreCase(agent.getStatus())) {
 					throw new InvalidStatusException("Agent is Unverified");
-				} else if (AgentConstants.ACTIVE.equalsIgnoreCase(agent
-						.getStatus())) {
+				} else if (AgentConstants.ACTIVE.equalsIgnoreCase(agent.getStatus())) {
 					// TODO create a login log
 					// TODO maintain session
 				}
@@ -154,17 +148,14 @@ public class AgentDAOImpl implements AgentDAO {
 			Agent agent = (Agent) cr.uniqueResult();
 			if (agent != null) {
 
-				if (AgentConstants.ACTIVE.equalsIgnoreCase(agent.getStatus()
-						.toUpperCase())) {
+				if (AgentConstants.ACTIVE.equalsIgnoreCase(agent.getStatus().toUpperCase(Locale.ENGLISH))) {
 					LOGGER.info("end executing validateCredentials");
 					return true;
 				} else {
-					throw new InvalidStatusException(
-							"customer is not in active state");
+					throw new InvalidStatusException("customer is not in active state");
 				}
 			} else {
-				throw new NoRecordFoundException(
-						"email or password is incorrect");
+				throw new NoRecordFoundException("email or password is incorrect");
 			}
 		} finally {
 			session.close();
@@ -197,8 +188,7 @@ public class AgentDAOImpl implements AgentDAO {
 	}
 
 	@Override
-	public Agent getAgentByMobileNo(String mobileNo)
-			throws NoRecordFoundException, Exception {
+	public Agent getAgentByMobileNo(String mobileNo) throws NoRecordFoundException, Exception {
 		LOGGER.info("start executing getAgentByMobileno");
 		Session session = sessionFactory.openSession();
 		try {
@@ -206,8 +196,7 @@ public class AgentDAOImpl implements AgentDAO {
 			cr.add(Restrictions.eq("mobileNo", mobileNo));
 			Agent agent = (Agent) cr.uniqueResult();
 			if (agent == null) {
-				throw new NoRecordFoundException(
-						"No agent exist with mobile number");
+				throw new NoRecordFoundException("No agent exist with mobile number");
 			}
 			LOGGER.info("end executing getAgentByMobileno");
 			return agent;
